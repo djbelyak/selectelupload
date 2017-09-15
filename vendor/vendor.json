@@ -3,16 +3,34 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "hJ7XVwCy1a9CjLkG1TttHRz1MqM=",
+			"path": "github.com/dustin/go-humanize",
+			"revision": "79e699ccd02f240a1f1fbbdcee7e64c1c12e41aa",
+			"revisionTime": "2017-08-28T03:59:35Z"
+		},
+		{
 			"checksumSHA1": "FXOB37rhSQ1gwkPeouYYOseEkoY=",
 			"path": "github.com/ernado/selectel/storage",
 			"revision": "10f520cf8312d6729981b6cd30f1085d0fce436b",
 			"revisionTime": "2014-10-23T12:19:53Z"
 		},
 		{
+			"checksumSHA1": "7fVWFYGx+yLVaqr/oso3depNBhU=",
+			"path": "github.com/segmentio/go-snakecase",
+			"revision": "45c439a7815bbb735c7e000cbb73360d5f034fb9",
+			"revisionTime": "2016-07-26T19:29:16Z"
+		},
+		{
 			"checksumSHA1": "BS7BDDgamF2kOt5LwKp9M8tgBxs=",
 			"path": "github.com/tj/go-config",
 			"revision": "64d710f2e2f024baa969b9e4659539900db23f0f",
 			"revisionTime": "2015-09-07T21:06:18Z"
+		},
+		{
+			"checksumSHA1": "gzY7ZGjUv1IKIEeaCQWvJMvKunY=",
+			"path": "gopkg.in/validator.v2",
+			"revision": "460c83432a98c35224a6fe352acf8b23e067ad06",
+			"revisionTime": "2017-08-14T13:27:53Z"
 		}
 	],
 	"rootPath": "github.com/djbelyak/selectelupload"
