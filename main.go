@@ -25,20 +25,26 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	objects, err := api.Container(options.Container).Objects()
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, obj := range objects {
-		err = obj.Remove()
-		if err != nil {
-			log.Printf("Can't remove file: %v", err)
-			continue
-		}
-	}
 
 	var wg sync.WaitGroup
+	for _, obj := range objects {
+		wg.Add(1)
+		go func(obj storage.ObjectAPI) {
+			defer wg.Done()
+			err := obj.Remove()
+			if err != nil {
+				log.Printf("Can't remove file: %v", err)
+				return
+			}
+		}(obj)
+	}
+
+	wg.Wait()
+
 	upload := make(chan string, 1048576)
 
 	go func() {
