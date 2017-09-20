@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/ernado/selectel/storage"
@@ -61,7 +62,7 @@ func main() {
 				}
 				defer file.Close()
 
-				err = api.Upload(file, options.Container, filepath.ToSlash(filename), "")
+				err = api.Upload(file, options.Container, strings.TrimPrefix(filepath.ToSlash(filename), options.Dir), "")
 				if err != nil {
 					log.Printf("Can't upload file %s: %v", filename, err)
 					return
