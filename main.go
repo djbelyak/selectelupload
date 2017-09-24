@@ -54,7 +54,6 @@ func main() {
 	upload := make(chan UploadTask, 1048576)
 
 	go func() {
-		wg.Add(1)
 		for task := range upload {
 			wg.Add(1)
 			go func(task UploadTask) {
@@ -87,7 +86,6 @@ func main() {
 			}(task)
 
 		}
-		wg.Done()
 	}()
 
 	err = filepath.Walk(options.Dir, func(path string, info os.FileInfo, err error) error {
@@ -102,7 +100,6 @@ func main() {
 	})
 
 	//upload <- filepath.Join(options.Dir, "README.md")
-	close(upload)
 
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -110,6 +107,7 @@ func main() {
 	}
 
 	wg.Wait()
+	close(upload)
 
 	log.Println("Well done!")
 
