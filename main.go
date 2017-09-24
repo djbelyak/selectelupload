@@ -18,6 +18,11 @@ type Options struct {
 	Dir       string `help:"directory which will be uploaded"`
 }
 
+type UploadTask struct {
+	File     string
+	Attempts uint
+}
+
 func main() {
 	var options Options
 	config.MustResolve(&options)
@@ -46,18 +51,25 @@ func main() {
 
 	wg.Wait()
 
-	upload := make(chan string, 1048576)
+	upload := make(chan UploadTask, 1048576)
 
 	go func() {
 		wg.Add(1)
-		for file := range upload {
+		for task := range upload {
 			wg.Add(1)
-			go func(filename string) {
+			go func(task UploadTask) {
 				defer wg.Done()
+
+				if task.Attempts == 0 {
+					return
+				}
+				filename := task.File
 
 				file, err := os.Open(filename)
 				if err != nil {
 					log.Printf("Can't open file %s: %v", filename, err)
+					task.Attempts--
+					upload <- task
 					return
 				}
 				defer file.Close()
@@ -65,12 +77,14 @@ func main() {
 				err = api.Upload(file, options.Container, strings.TrimPrefix(filepath.ToSlash(filename), options.Dir), "")
 				if err != nil {
 					log.Printf("Can't upload file %s: %v", filename, err)
+					task.Attempts--
+					upload <- task
 					return
 				}
 
 				log.Printf("File %s uploaded", filename)
 
-			}(file)
+			}(task)
 
 		}
 		wg.Done()
@@ -78,7 +92,10 @@ func main() {
 
 	err = filepath.Walk(options.Dir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && path[0] != '.' {
-			upload <- path
+			upload <- UploadTask{
+				File:     path,
+				Attempts: 5,
+			}
 		}
 
 		return nil
